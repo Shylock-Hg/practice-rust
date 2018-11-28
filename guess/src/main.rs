@@ -4,8 +4,8 @@ use std::io;
 use rand::Rng;
 use std::cmp::Ordering;
 
-static LOWER : u32 = 0;
-static UPPER : u32 = 99;
+const LOWER : u32 = 0;
+const UPPER : u32 = 99;
 
 fn main() {
         println!("Hello Guess!");
