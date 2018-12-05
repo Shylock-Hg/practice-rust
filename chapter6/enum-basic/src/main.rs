@@ -14,6 +14,13 @@ fn main() {
         println!("Move msg is {:?}", msg);
         let msg2 = Message::Quit;
         println!("Quit msg is {:?}", msg2);
+
+
+        // Option enum
+        let x:i32 = 3;
+        let y     = Some(3);
+        // x + y; // error: no matched function
+        // used in logic instead of calculus ususally
 }
 
 // define enum and using inside struct
@@ -53,3 +60,9 @@ enum Message {
     Write(String),  // tuple struct
     ChangeColor(i32, i32, i32),  // tuple struct
 }
+
+// Option enum
+// enum Option<T> {
+//      Some(T),  // tuple struct
+//      None,  // unit struct
+// }
