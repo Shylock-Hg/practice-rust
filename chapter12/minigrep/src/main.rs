@@ -1,25 +1,20 @@
 use std::env;
 
 extern crate log;
-use log::{info, trace, warn};
+extern crate stderrlog;
+use log::{trace, debug, info, warn, error};
+
+use minigrep::Options;
 
 fn main() {
-        let args: Vec<String> = env::args().collect();
-        trace!("Then length of arguments is {}!", args.len());
-        if args.len() != 3 {
-                panic!("Too less arguments!");
-        };
-        trace!("The arguments is `{:?}`", args);
+        // stderrlog
+        stderrlog::new().module(module_path!()).verbosity(99).init().unwrap();
 
-        let options = Options {
-                pattern: &args[1],
-                filename: &args[2],
-        };
-        trace!("The argument pattern is {}!", options.pattern);
-        trace!("The argument filename is {}!", options.filename);
-}
+        // options
+        let options = Options::from(env::args());
+        trace!("The argument pattern is `{}`!", options.pattern);
+        trace!("The argument filename is `{}`!", options.filename);
 
-struct Options<'a> {
-        pattern: &'a String,
-        filename: &'a String,
+        // open and read file
+        minigrep::run(&options);
 }

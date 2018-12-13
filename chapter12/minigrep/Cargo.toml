@@ -5,4 +5,5 @@ authors = ["Shylock-Hg <tcath2s@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-log=""
+log={ features = ["max_level_trace", "release_max_level_warn"] }
+stderrlog=""
