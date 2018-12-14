@@ -2,7 +2,6 @@ use std::env;
 use std::io::prelude::*;
 use std::fs;
 use std::io;
-use std::fmt;
 
 extern crate log;
 use log::{trace, debug, info, warn, error};
@@ -15,16 +14,17 @@ pub struct Options {
 }
 
 impl Options {
-        pub fn from(args: std::env::Args) -> Options {
+        pub fn from(mut args: std::env::Args) -> Options {
                 trace!("{:?}", args);
-                let args: Vec<String> = args.collect();
+                // let args: Vec<String> = args.collect();
                 trace!("The arguments is `{:?}`", args);
                 if args.len() < 3 {
                         panic!("Too less arguments, at least two!");
                 };
+                args.next();
                 Options {
-                        pattern: args[1].clone(),
-                        filename: args[2].clone(),
+                        pattern: args.next().unwrap(),
+                        filename: args.next().unwrap(),
                         case_sensitive: env::var("CASE_INSENSITIVE").is_err(),
                 }
                 // \TODO check available of arguments
