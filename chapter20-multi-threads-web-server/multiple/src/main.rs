@@ -14,6 +14,8 @@ fn main() {
         // stderrlog
         stderrlog::new().module(module_path!()).verbosity(99).init().unwrap();
 
+        let pool = ThreadPool::new(4).unwrap();  // create a threads pool with 4 thread
+
         let listener = TcpListener::bind("127.0.0.1:8080").unwrap();
         for stream in listener.incoming() {
                 let stream = stream.unwrap();  // get TCP stream connection from TCP request
@@ -24,7 +26,6 @@ fn main() {
                 thread::spawn(|| {
                         handle_request(stream);});
 */
-                let pool = ThreadPool::new(4).unwrap();  // create a threads pool with 4 thread
                 // apply the dealing of request to one available thread or waiting for thread to be available
                 pool.apply(|| {
                         handle_request(stream);
