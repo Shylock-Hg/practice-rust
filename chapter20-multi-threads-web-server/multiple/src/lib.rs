@@ -13,13 +13,13 @@ pub struct ThreadPool {
 
 #[derive(Debug)]
 pub enum ThreadPoolError {
-        INVALID_SIZE,
+        InvalidSize,
 }
 
 impl ThreadPool {
         pub fn new(count: usize) -> Result<ThreadPool, ThreadPoolError> {
                 if count == 0 {
-                        return Err(ThreadPoolError::INVALID_SIZE);
+                        return Err(ThreadPoolError::InvalidSize);
                 };
                 let (sender, receiver) = mpsc::channel();
                 let receiver = Arc::new(Mutex::new(receiver));
@@ -42,23 +42,33 @@ impl ThreadPool {
         }
 }
 
+impl Drop for ThreadPool {
+        fn drop(&mut self) {
+                for work in &mut self.workers {
+                        if let Some(handle) = work.handle.take() {
+                                handle.join().unwrap();
+                        }
+                }
+        }
+}
+
 pub struct Worker {
         id: usize,
-        handle: thread::JoinHandle<()>,
+        handle: Option<thread::JoinHandle<()>>,
 }
 
 impl Worker {
         fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
                 Worker {
                         id: id,
-                        handle: thread::spawn(move || {
+                        handle: Some(thread::spawn(move || {
                                 loop {
                                         let job = receiver.lock().expect("Lock failed!").recv().expect("Recv failed!");  // Box<F>
                                         // (*job)();
                                         trace!("Thread {} got a job.", id);
                                         job.call();
                                 }
-                        }),
+                        })),
                 }
         }
 }
