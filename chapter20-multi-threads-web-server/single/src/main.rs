@@ -1,6 +1,8 @@
 use std::net::{TcpStream, TcpListener};
 use std::io::prelude::*;
 use std::fs;
+use std::thread;
+use std::time::Duration;
 
 extern crate log;
 extern crate stderrlog;
@@ -27,6 +29,7 @@ fn handle_connection(mut stream: TcpStream) {
 
         // response
         let get = b"GET / HTTP/1.1\r\n";
+        let sleep = b"GET /sleep HTTP/1.1\r\n";
 /*
         if buffer.starts_with(get) {
                 trace!("Hit.");
@@ -46,10 +49,11 @@ fn handle_connection(mut stream: TcpStream) {
 */
 
         let (header, body_file) = if buffer.starts_with(get) {
-                trace!("Hit.");
+                ("HTTP/1.1 200 OK\r\n\r\n", "hello.html")
+        } else if buffer.starts_with(sleep) {
+                thread::sleep(Duration::from_secs(50));
                 ("HTTP/1.1 200 OK\r\n\r\n", "hello.html")
         } else {
-                trace!("Not hit.");
                 ("HTTP/1.1 404 NOT FOUND\r\n\r\n", "404.html")
         };
         let response = format!("{}{}", header, fs::read_to_string(body_file).unwrap());
