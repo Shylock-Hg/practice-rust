@@ -28,3 +28,10 @@ fn dangle() -> &String {
         &s
 }
 */
+
+// ! reference is the one implementation of borrow(others such as: Rc, slice or other user-defined RC-based smart pointers)
+
+
+// ! In implementation
+//   1. Borrower(such as reference and slice etc.) don't impl Drop trait, Owner(such as Box and String etc...) impl Drop trait.
+//   2. The RC-based smart pointer are owner and brrower at the same time.(The drop method will be involved when strong reference decrease to zero).
